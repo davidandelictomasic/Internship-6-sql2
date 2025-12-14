@@ -254,3 +254,23 @@ JOIN match_types mt ON mt.id = m.match_type_id
 WHERE m.referee_id = 5
 ORDER BY m.match_datetime;
 -- "Execution Time: 0.958 ms"
+
+
+CREATE INDEX idx_matches_tournament ON matches(tournament_id);
+CREATE INDEX idx_matches_home_team ON matches(home_team_id);
+CREATE INDEX idx_matches_away_team ON matches(away_team_id);
+CREATE INDEX idx_matches_referee ON matches(referee_id);
+CREATE INDEX idx_matches_match_type ON matches(match_type_id);
+CREATE INDEX idx_matches_datetime ON matches(match_datetime);
+
+CREATE INDEX idx_events_match ON events(match_id);
+CREATE INDEX idx_events_player ON events(player_id);
+CREATE INDEX idx_events_team ON events(team_id);
+CREATE INDEX idx_events_type ON events(event_type);
+
+CREATE INDEX idx_tp_tournament ON tournament_participation(tournament_id);
+CREATE INDEX idx_tp_team ON tournament_participation(team_id);
+
+CREATE INDEX idx_tournaments_winner ON tournaments(winner_team_id);
+
+CREATE INDEX idx_players_team ON players(team_id);
