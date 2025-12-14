@@ -9,6 +9,8 @@ FROM tournaments t
 LEFT JOIN teams tm ON tm.id = t.winner_team_id
 ORDER BY t.year;
 -- "Execution Time: 0.197 ms"
+-- Sort  (cost=30.79..30.91 rows=50 width=447) (actual time=0.514..0.521 rows=50 loops=1) "Execution Time: 0.591 ms"
+
 
 -- #2
 EXPLAIN ANALYZE
@@ -19,6 +21,7 @@ FROM tournament_participation tp
 JOIN teams tm ON tm.id = tp.team_id
 WHERE tp.tournament_id = 10;
 -- "Execution Time: 0.311 ms"
+-- "Hash Join  (cost=15.36..48.73 rows=37 width=21) (actual time=0.757..1.096 rows=37.00 loops=1)" "Execution Time: 0.576 ms"
 
 -- #3
 EXPLAIN ANALYZE
@@ -30,6 +33,7 @@ SELECT
 FROM players p
 WHERE p.team_id = 5;
 -- "Execution Time: 0.574 ms"
+-- "Bitmap Heap Scan on players p  (cost=4.34..26.84 rows=7 width=42) (actual time=0.119..0.134 rows=7.00 loops=1)" "Execution Time: 0.184 ms"
 
 -- #4
 EXPLAIN ANALYZE
@@ -47,6 +51,8 @@ JOIN match_types mt ON mt.id = m.match_type_id
 WHERE m.tournament_id = 10
 ORDER BY m.match_datetime;
 -- "Execution Time: 1.675 ms"
+-- "Sort  (cost=148.42..148.95 rows=211 width=148) (actual time=1.940..1.965 rows=211.00 loops=1)" "Execution Time: 2.090 ms"
+
 
 -- #5
 EXPLAIN ANALYZE
@@ -64,6 +70,7 @@ JOIN match_types mt ON mt.id = m.match_type_id
 WHERE m.home_team_id = 5 OR m.away_team_id = 5
 ORDER BY m.match_datetime;
 -- "Execution Time: 2.034 ms"
+-- "Sort  (cost=132.42..132.45 rows=15 width=148) (actual time=1.251..1.257 rows=17.00 loops=1)" "Execution Time: 1.500 ms"
 
 -- #6
 EXPLAIN ANALYZE
@@ -78,6 +85,7 @@ JOIN teams t ON t.id = e.team_id
 WHERE e.match_id = 100
 ORDER BY e.minute;
 -- "Execution Time: 1.270 ms"
+-- "Sort  (cost=81.06..81.07 rows=4 width=52) (actual time=0.389..0.394 rows=8.00 loops=1)" "Execution Time: 0.525 ms"
 
 -- #7
 EXPLAIN ANALYZE
@@ -95,6 +103,7 @@ WHERE e.event_type IN ('YELLOW_CARD','RED_CARD')
   AND m.tournament_id = 10
 ORDER BY e.minute;
 -- "Execution Time: 6.559 ms"
+-- "Sort  (cost=822.16..823.76 rows=638 width=56) (actual time=14.140..14.229 rows=638.00 loops=1)" "Execution Time: 14.490 ms"
 
 -- #8
 EXPLAIN ANALYZE
@@ -110,6 +119,8 @@ WHERE e.event_type = 'GOAL'
   AND m.tournament_id = 10
 GROUP BY p.id, t.id;
 -- "Execution Time: 2.706 ms"
+-- "HashAggregate  (cost=502.43..505.52 rows=206 width=55) (actual time=5.705..5.783 rows=195.00 loops=1)" "Execution Time: 5.993 ms"
+
 
 -- #9
 EXPLAIN ANALYZE
@@ -123,6 +134,7 @@ JOIN teams t ON t.id = tp.team_id
 WHERE tp.tournament_id = 10
 ORDER BY tp.place;
 -- "Execution Time: 0.634 ms"
+-- "Sort  (cost=49.79..49.88 rows=37 width=19) (actual time=0.469..0.475 rows=37.00 loops=1)" "Execution Time: 0.538 ms"
 
 -- #10
 EXPLAIN ANALYZE
@@ -144,6 +156,7 @@ JOIN match_types mt ON mt.id = m.match_type_id
 WHERE mt.name = 'Final'
 ORDER BY m.match_datetime;
 -- "Execution Time: 2.291 ms"
+-- "Sort  (cost=144.19..144.24 rows=20 width=62) (actual time=4.839..4.889 rows=595.00 loops=1)" "Execution Time: 5.003 ms"
 
 -- #11
 EXPLAIN ANALYZE
@@ -155,6 +168,7 @@ JOIN match_types mt ON mt.id = m.match_type_id
 GROUP BY mt.name
 ORDER BY match_count DESC;
 -- "Execution Time: 2.882 ms"
+-- "Sort  (cost=170.91..171.41 rows=200 width=126) (actual time=4.922..4.928 rows=5.00 loops=1)" "Execution Time: 5.213 ms"
 
 -- #12
 EXPLAIN ANALYZE
@@ -171,6 +185,7 @@ JOIN match_types mt ON mt.id = m.match_type_id
 WHERE m.match_datetime::date = '2024-12-17'
 ORDER BY m.match_datetime;
 -- "Execution Time: 0.828 ms"
+-- "Sort  (cost=211.42..211.49 rows=25 width=148) (actual time=1.995..2.000 rows=9.00 loops=1)" "Execution Time: 2.081 ms"
 
 -- #13
 EXPLAIN ANALYZE
@@ -186,6 +201,7 @@ WHERE e.event_type = 'GOAL'
   AND m.tournament_id = 10
 GROUP BY p.id, t.id;
 -- "Execution Time: 3.860 ms"
+-- "HashAggregate  (cost=502.43..505.52 rows=206 width=55) (actual time=4.928..5.038 rows=195.00 loops=1)" "Execution Time: 5.210 ms"
 
 -- #14
 EXPLAIN ANALYZE
@@ -198,6 +214,7 @@ JOIN tournaments t ON t.id = tp.tournament_id
 WHERE tp.team_id = 501
 ORDER BY t.year;
 -- "Execution Time: 0.128 ms"
+-- "Sort  (cost=14.98..15.00 rows=5 width=226) (actual time=0.272..0.275 rows=5.00 loops=1)" "Execution Time: 0.339 ms"
 
 -- #15
 EXPLAIN ANALYZE
@@ -212,6 +229,7 @@ GROUP BY t.id
 ORDER BY total_points DESC
 LIMIT 1;
 -- "Execution Time: 8.806 ms"
+-- "Limit  (cost=852.97..852.97 rows=1 width=19) (actual time=18.907..18.915 rows=1.00 loops=1)" "Execution Time: 19.031 ms"
 
 -- #16
 EXPLAIN ANALYZE
@@ -224,6 +242,7 @@ JOIN tournament_participation tp ON tp.tournament_id = t.id
 JOIN players p ON p.team_id = tp.team_id
 GROUP BY t.id;
 -- "Execution Time: 7.988 ms"
+-- "GroupAggregate  (cost=886.90..966.40 rows=50 width=238) (actual time=12.681..16.643 rows=25.00 loops=1)" "Execution Time: 16.983 ms"
 
 -- #17
 EXPLAIN ANALYZE
@@ -237,6 +256,7 @@ JOIN teams t ON t.id = e.team_id
 WHERE e.event_type = 'GOAL'
 GROUP BY t.id, t.name, p.id, p.first_name, p.last_name;
 -- "Execution Time: 9.653 ms"
+-- "Unique  (cost=946.01..1080.43 rows=4888 width=84) (actual time=14.464..19.980 rows=987.00 loops=1)" "Execution Time: 20.715 ms"
 
 -- #18
 EXPLAIN ANALYZE
@@ -254,6 +274,7 @@ JOIN match_types mt ON mt.id = m.match_type_id
 WHERE m.referee_id = 5
 ORDER BY m.match_datetime;
 -- "Execution Time: 0.958 ms"
+-- "Sort  (cost=117.29..117.31 rows=8 width=148) (actual time=1.165..1.170 rows=8.00 loops=1)" "Execution Time: 1.290 ms"
 
 
 CREATE INDEX idx_matches_tournament ON matches(tournament_id);
